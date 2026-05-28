@@ -104,7 +104,7 @@ if arquivo is not None:
     # FILTROS
     # =========================================
 
-    colf1, colf2 = st.columns(2)
+    colf1, colf2, colf3 = st.columns(3)
 
     with colf1:
         filtro_status = st.selectbox(
@@ -124,11 +124,25 @@ if arquivo is not None:
             ]
         )
 
+    with colf3:
+        filtro_modelo = st.text_input(
+            "Buscar Modelo",
+            placeholder="Digite parte do nome..."
+        )
+
     # =========================================
     # APLICAR FILTROS
     # =========================================
 
     df_filtrado = df.copy()
+
+    # Filtro Modelo
+    if filtro_modelo:
+        df_filtrado = df_filtrado[
+            df_filtrado["MODELO"].astype(str).str.contains(
+                filtro_modelo, case=False, na=False
+            )
+        ]
 
     # Filtro Status
     if filtro_status != "TODOS":
@@ -190,6 +204,12 @@ if arquivo is not None:
                 "DIAS_RESTANTES"
             ]
         ],
+        column_config={
+            "VALIDADE": st.column_config.DateColumn(
+                "VALIDADE",
+                format="DD/MM/YYYY"
+            )
+        },
         use_container_width=True,
         height=600
     )
